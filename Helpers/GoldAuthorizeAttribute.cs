@@ -1,4 +1,6 @@
-﻿using Accounting.Helpers;
+﻿using Accounting.BusinessLogics.IBusinessLogics;
+using Accounting.Helpers;
+using Accounting.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GoldHelpers.Helpers
@@ -8,7 +10,14 @@ namespace GoldHelpers.Helpers
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            AuthorizeAttribute accountingAuthAttr = new AuthorizeAttribute();
+            ILoggerFactory? factory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+
+            ILogger<AuthorizeAttribute>? logger = factory.CreateLogger<AuthorizeAttribute>();
+
+            AuthorizeAttribute accountingAuthAttr = new(logger, (IAuthentication)new AuthenticationService());
             accountingAuthAttr.OnAuthorization(context);
         }
     }
