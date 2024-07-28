@@ -8,12 +8,14 @@ namespace GoldHelpers.Helpers
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            string host = new ConfigurationBuilder()
+            bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
+
+            string host = !isDevelopment ? new ConfigurationBuilder()
                            .SetBasePath(Directory.GetCurrentDirectory())
                            .AddJsonFile("appsettings.json")
                            .Build()
                            .GetSection("ProjectURLs")
-                           .GetValue<string>("Accounting")!;
+                           .GetValue<string>("Accounting")! : "http://localhost:5122";
 
             try
             {
