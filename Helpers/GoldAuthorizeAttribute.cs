@@ -1,5 +1,5 @@
-﻿using Accounting.Helpers;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using RestSharp;
 
 namespace GoldHelpers.Helpers
 {
@@ -8,15 +8,36 @@ namespace GoldHelpers.Helpers
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            /*ILoggerFactory? factory = LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-            });
+            string host = new ConfigurationBuilder()
+                           .SetBasePath(Directory.GetCurrentDirectory())
+                           .AddJsonFile("appsettings.json")
+                           .Build()
+                           .GetSection("ProjectURLs")
+                           .GetValue<string>("Accounting")!;
 
-            ILogger<AuthorizeAttribute>? logger = factory.CreateLogger<AuthorizeAttribute>();
-            AuthorizeAttribute accountingAuthAttr = new(logger, (IAuthentication)new AuthenticationService());*/
-            AuthorizeAttribute accountingAuthAttr = new AuthorizeAttribute();
-            accountingAuthAttr.OnAuthorization(context);
+            try
+            {
+                // BaseURL
+                RestClient client = new($"{host}/api/Attributes/GetAuthorize");
+                RestRequest request = new()
+                {
+                    Method = Method.Post
+                };
+
+                // Headers
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("cache-control", "no-cache");
+
+                // Body
+                request.AddBody(new { context });
+
+                // Send SMS
+                RestResponse response = client.ExecutePost(request);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

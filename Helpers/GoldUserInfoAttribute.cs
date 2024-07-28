@@ -23,7 +23,7 @@ namespace GoldHelpers.Helpers
             try
             {
                 // BaseURL
-                RestClient client = new($"{host}/api/Attributes/GetAuthorize");
+                RestClient client = new($"{host}/api/Attributes/GetUserInfo");
                 RestRequest request = new()
                 {
                     Method = Method.Post
@@ -34,7 +34,7 @@ namespace GoldHelpers.Helpers
                 request.AddHeader("cache-control", "no-cache");
 
                 // Body
-                request.AddBody(new { context = context });
+                request.AddBody(new { context });
 
                 // Send SMS
                 RestResponse response = client.ExecutePost(request);

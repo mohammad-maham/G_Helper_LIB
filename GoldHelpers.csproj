@@ -11,10 +11,4 @@
     <PackageReference Include="RestSharp" Version="111.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Accounting">
-      <HintPath>..\G_Accounting_API\Accounting\bin\Release\net8.0\Accounting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
