@@ -1,7 +1,4 @@
-﻿using Accounting.Helpers;
-using Accounting.Models;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using RestSharp;
 
 namespace GoldHelpers.Helpers
@@ -23,24 +20,21 @@ namespace GoldHelpers.Helpers
                 .GetSection("ProjectURLs")
                 .GetValue<string>("Accounting")!;
 
-            UserInfoAttribute userInfoAttribute = new UserInfoAttribute();
-            userInfoAttribute.OnActionExecuting(context);
-
             try
             {
                 // BaseURL
-                RestClient client = new($"{host}/api/SMTP/SendOTPSMS");
+                RestClient client = new($"{host}/api/Attributes/GetAuthorize");
                 RestRequest request = new()
                 {
                     Method = Method.Post
                 };
 
-                // Parameters
-                //request.AddJsonBody(new { Mobile = sms.Destination!.Value.ToString(), OTP = sms.Options!.Message });
-
                 // Headers
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("cache-control", "no-cache");
+
+                // Body
+                request.AddBody(new { context = context });
 
                 // Send SMS
                 RestResponse response = client.ExecutePost(request);
