@@ -5,8 +5,10 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace GoldHelpers.Helpers
 {
@@ -25,11 +27,13 @@ namespace GoldHelpers.Helpers
             else
             {
                 string token = headerValue.Parameter;
-                bool isProductionMode = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
+                bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
+                string dllName = Assembly.GetExecutingAssembly().GetName().Name!;
+                string? appSettingsPath = Assembly.GetExecutingAssembly().Location.Replace($"{dllName}.dll", "");
 
-                string host = isProductionMode ? new ConfigurationBuilder()
-                               .SetBasePath(Directory.GetCurrentDirectory())
-                               .AddJsonFile("appsettings.json")
+                string host = !isDevelopment ? new ConfigurationBuilder()
+                               .SetBasePath(appSettingsPath)
+                               .AddJsonFile("goldhelper.appsettings.json")
                                .Build()
                                .GetSection("ProjectURLs")
                                .GetValue<string>("Accounting")! : "http://localhost:5288";

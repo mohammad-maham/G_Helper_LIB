@@ -13,13 +13,6 @@ namespace GoldHelpers.Helpers
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class GoldUserInfoAttribute : Attribute, IActionFilter
     {
-        private readonly IConfiguration _configuration;
-
-        public GoldUserInfoAttribute(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public void OnActionExecuted(ActionExecutedContext context)
         {
             return;
@@ -37,9 +30,15 @@ namespace GoldHelpers.Helpers
             else
             {
                 string token = headerValue.Parameter;
-                bool isProductionMode = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
 
-                string host = isProductionMode ? _configuration["Accounting"]! : "http://localhost:5288";
+                bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
+
+                string host = !isDevelopment ? new ConfigurationBuilder()
+                               .SetBasePath(Directory.GetCurrentDirectory())
+                               .AddJsonFile("goldhelper.appsettings.json")
+                               .Build()
+                               .GetSection("ProjectURLs")
+                               .GetValue<string>("Accounting")! : "http://localhost:5288";
 
                 try
                 {
