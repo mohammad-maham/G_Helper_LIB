@@ -5,7 +5,8 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
-  "ProjectURLs": {
-    "Accounting": "http://194.60.231.81:7121"
+  "ApplicationURL": {
+    "AccountingLive": "http://194.60.231.81:7121",
+    "AccountingPreLive": "http://localhost:5122"
   }
 }
