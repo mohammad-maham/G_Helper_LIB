@@ -1,4 +1,5 @@
 using GoldHelpers.Helpers;
+using GoldHelpers.Middleware;
 
 namespace GoldHelpers
 {
@@ -13,7 +14,7 @@ namespace GoldHelpers
                 options.JsonSerializerOptions.Converters.Add(new CustomJsonConverterForType());
             });
             WebApplication app = builder.Build();
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.Run();
         }
     }
