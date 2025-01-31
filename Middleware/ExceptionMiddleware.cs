@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using GoldHelpers.Models;
+using System.Net;
 
 namespace GoldHelpers.Middleware
 {
@@ -25,9 +26,9 @@ namespace GoldHelpers.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                APIResponse response = _env.IsDevelopment()
-                    ? new APIResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace!.ToString())
-                    : new APIResponse((int)HttpStatusCode.InternalServerError);
+                GoldAPIResult response = _env.IsDevelopment()
+                    ? new GoldAPIResult((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace!.ToString())
+                    : new GoldAPIResult((int)HttpStatusCode.InternalServerError);
 
                 /*JsonSerializerOptions options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
                 string json = JsonSerializer.Serialize(response, options);*/

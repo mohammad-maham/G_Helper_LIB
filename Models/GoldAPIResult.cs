@@ -1,8 +1,19 @@
-﻿namespace GoldHelpers.Middleware
+﻿namespace GoldHelpers.Models
 {
-    public class APIResponse
+    public enum GoldHosts
     {
-        public APIResponse(int? statusCode = 200, string? message = "", string? data = null)
+        Accounting,
+        IPG,
+        Store,
+        Wallet,
+        Basket,
+        Gateway,
+        Communication
+    }
+
+    public class GoldAPIResult
+    {
+        public GoldAPIResult(int? statusCode = 200, string? message = "", string? data = null)
         {
             StatusCode = statusCode;
             Message = string.IsNullOrEmpty(message) ? GetDefaultMessageForStatusCode(statusCode ?? 200) : message;
