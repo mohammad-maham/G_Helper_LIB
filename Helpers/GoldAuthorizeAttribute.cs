@@ -16,34 +16,37 @@ namespace GoldHelpers.Helpers
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
-
             StringValues headerValues = context.HttpContext.Request.Headers[HeaderNames.Authorization];
             AuthenticationHeaderValue.TryParse(headerValues, out AuthenticationHeaderValue? headerValue);
 
-            if (headerValue == null || headerValue.Parameter == null)
-            {
-                // No Athuorization header, Unauthorized!
-                context.Result = new JsonResult(new { message = "Unauthorized!" })
-                { StatusCode = StatusCodes.Status401Unauthorized };
-            }
-            else
-            {
-                string token = headerValue.Parameter;
+            bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
 
-                try
+            if (!isDevelopment)
+            {
+                if (headerValue == null || headerValue.Parameter == null)
                 {
-                    GoldAPIResult? result = new GoldAPIResponse(GoldHosts.Accounting, "/api/Attributes/GetAuthorize", new { Token = token }).Post();
-
-                    if (result != null && result.Data == "false")
-                    {
-                        context.Result = new JsonResult(new { message = "Unauthorized!" })
-                        { StatusCode = StatusCodes.Status401Unauthorized };
-                    }
+                    // No Athuorization header, Unauthorized!
+                    context.Result = new JsonResult(new { message = "Unauthorized!" })
+                    { StatusCode = StatusCodes.Status401Unauthorized };
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e.Message);
+                    string token = headerValue.Parameter;
+
+                    try
+                    {
+                        GoldAPIResult? result = new GoldAPIResponse(GoldHosts.Accounting, "/api/Attributes/GetAuthorize", new { Token = token }).Post();
+
+                        if (result != null && result.Data == "false")
+                        {
+                            context.Result = new JsonResult(new { message = "Unauthorized!" })
+                            { StatusCode = StatusCodes.Status401Unauthorized };
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
         }
