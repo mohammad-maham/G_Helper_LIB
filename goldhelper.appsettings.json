@@ -6,7 +6,7 @@
     }
   },
   "ApplicationURL": {
-    "AccountingLive": "http://194.60.231.11:7121",
+    "AccountingLive": "http://45.138.135.34:7121",
     "AccountingPreLive": "http://localhost:5122"
   }
 }
