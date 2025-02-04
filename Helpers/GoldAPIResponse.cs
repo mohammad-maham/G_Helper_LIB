@@ -2,12 +2,15 @@
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace GoldHelpers.Helpers
 {
     public class GoldAPIResponse
     {
+
+        private readonly IHttpContextAccessor _contextAccessor;
         private string? ApiPath { get; set; }
         public GoldHosts Host { get; set; }
         public string? Authorization { get; set; }
@@ -55,6 +58,7 @@ namespace GoldHelpers.Helpers
             Authorization = authorization;
             Data = data;
             _Method = method;
+            _contextAccessor = new HttpContextAccessor();
         }
 
         public GoldAPIResponse(string url, object? data, Method method = Method.Post, string? authorization = null)
@@ -65,6 +69,7 @@ namespace GoldHelpers.Helpers
             Authorization = authorization;
             Data = data;
             _Method = method;
+            _contextAccessor = new HttpContextAccessor();
         }
 
         public async Task<GoldAPIResult?> PostAsync()
@@ -128,6 +133,9 @@ namespace GoldHelpers.Helpers
 
         public GoldAPIResult? Post()
         {
+            var header = AuthenticationHeaderValue.Parse(_contextAccessor?.HttpContext?.Request.Headers["Authorization"]!);
+            var credentials = header.Parameter;
+
             GoldAPIResult? result = new();
             try
             {

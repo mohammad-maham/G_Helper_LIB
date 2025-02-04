@@ -8,5 +8,13 @@
   "ApplicationURL": {
     "AccountingLive": "http://45.138.135.34:7121",
     "AccountingPreLive": "http://localhost:5122"
+  },
+  "MicroservicesApiURL": {
+    "Gateway": "http://45.138.135.34:7120",
+    "Accounting": "http://45.138.135.34:7121",
+    "IPG": "http://45.138.135.34:7122",
+    "Wallet": "http://45.138.135.34:7123",
+    "Store": "http://45.138.135.34:7124",
+    "Communication": "http://45.138.135.34:7125"
   }
 }
