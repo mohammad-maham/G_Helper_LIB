@@ -75,6 +75,7 @@ namespace GoldHelpers.Helpers
         public async Task<GoldAPIResult?> PostAsync()
         {
             GoldAPIResult? result = new();
+            GApiResponse<dynamic>? resultRes = new();
             try
             {
                 RestClient client = new(ApiPath + Action);
@@ -115,7 +116,11 @@ namespace GoldHelpers.Helpers
 
                 if (response != null && !string.IsNullOrEmpty(response.Content) && response.StatusCode == HttpStatusCode.OK)
                 {
-                    result = JsonConvert.DeserializeObject<GoldAPIResult>(response.Content);
+                    resultRes = JsonConvert.DeserializeObject<GApiResponse<dynamic>>(response.Content);
+
+                    if (resultRes != null && resultRes.Data != null)
+                        result = (resultRes!.Data) as GoldAPIResult;
+
                     if (result != null && result.Message != null && result.Message.ToLower().Contains("unauthorize"))
                     {
                         result.Message = "ورود غیر مجاز لطفا دوباره وارد شوید.";
@@ -148,6 +153,7 @@ namespace GoldHelpers.Helpers
         public GoldAPIResult? Post()
         {
             GoldAPIResult? result = new();
+            GApiResponse<dynamic>? resultRes = new();
             try
             {
                 RestClient client = new(ApiPath + Action);
@@ -188,7 +194,11 @@ namespace GoldHelpers.Helpers
 
                 if (response != null && !string.IsNullOrEmpty(response.Content))
                 {
-                    result = JsonConvert.DeserializeObject<GoldAPIResult>(response.Content);
+                    resultRes = JsonConvert.DeserializeObject<GApiResponse<dynamic>>(response.Content);
+
+                    if (resultRes != null && resultRes.Data != null)
+                        result = (resultRes!.Data) as GoldAPIResult;
+
                     if (result != null && result.Message != null && result.Message.ToLower().Contains("unauthorize"))
                     {
                         result.Message = "ورود غیر مجاز لطفا دوباره وارد شوید.";
