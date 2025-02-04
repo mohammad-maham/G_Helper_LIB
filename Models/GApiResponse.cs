@@ -2,10 +2,16 @@
 
 public class GApiResponse<T>
 {
-
     public int? StatusCode { get; set; } = 200;
     public T? Data { get; set; }
-    public string? Message { get; set; }
+    public string? Message
+    {
+        get; set;
+        /*get => string.IsNullOrEmpty(Message) ? GetDefaultMessageForStatusCode(StatusCode ?? 200) : Message; set
+        {
+            Message = string.IsNullOrEmpty(Message) ? value : Message;
+        }*/
+    }
 
     private string GetDefaultMessageForStatusCode(int statusCode)
     {
@@ -19,7 +25,7 @@ public class GApiResponse<T>
             500 => "زیرساخت سیستم با مشکل مواجه شده است!",
             501 => "زمان تأییدیه به پایان رسیده است!",
             700 => "موجودی کافی نمیباشد!",
-            701=>"",
+            701 => "",
             _ => null!
         };
     }

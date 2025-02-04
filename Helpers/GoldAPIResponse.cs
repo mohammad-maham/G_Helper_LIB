@@ -84,7 +84,21 @@ namespace GoldHelpers.Helpers
                     Timeout = TimeSpan.FromSeconds(20),
                 };
 
-                if (Authorization != null)
+                if (_contextAccessor != null
+                    && _contextAccessor.HttpContext != null
+                    && _contextAccessor.HttpContext.Request != null
+                    && _contextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
+                {
+                    AuthenticationHeaderValue? header = AuthenticationHeaderValue
+                        .Parse(_contextAccessor.HttpContext.Request.Headers["Authorization"]!);
+                    Authorization = header.Parameter;
+
+                    if (!string.IsNullOrEmpty(Authorization))
+                    {
+                        request.AddHeader("Authorization", "Bearer " + Authorization);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(Authorization))
                 {
                     request.AddHeader("Authorization", "Bearer " + Authorization);
                 }
@@ -133,9 +147,6 @@ namespace GoldHelpers.Helpers
 
         public GoldAPIResult? Post()
         {
-            var header = AuthenticationHeaderValue.Parse(_contextAccessor?.HttpContext?.Request.Headers["Authorization"]!);
-            var credentials = header.Parameter;
-
             GoldAPIResult? result = new();
             try
             {
@@ -146,7 +157,21 @@ namespace GoldHelpers.Helpers
                     Timeout = TimeSpan.FromSeconds(100),
                 };
 
-                if (Authorization != null)
+                if (_contextAccessor != null
+                    && _contextAccessor.HttpContext != null
+                    && _contextAccessor.HttpContext.Request != null
+                    && _contextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
+                {
+                    AuthenticationHeaderValue? header = AuthenticationHeaderValue
+                        .Parse(_contextAccessor.HttpContext.Request.Headers["Authorization"]!);
+                    Authorization = header.Parameter;
+
+                    if (!string.IsNullOrEmpty(Authorization))
+                    {
+                        request.AddHeader("Authorization", "Bearer " + Authorization);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(Authorization))
                 {
                     request.AddHeader("Authorization", "Bearer " + Authorization);
                 }

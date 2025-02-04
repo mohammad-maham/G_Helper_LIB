@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 namespace GoldHelpers.Helpers
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class GoldAuthorizeAttribute : Attribute, IAuthorizationFilter
+    public class GoldServiceAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
@@ -17,7 +17,11 @@ namespace GoldHelpers.Helpers
 
             bool isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.InvariantCultureIgnoreCase);
 
-            if (!isDevelopment)
+            string reqPath = context.HttpContext.Request.Path.Value ?? "";
+            string callerService = reqPath.Split("/")[3] ?? "";
+            string[] srvTrust = { "Auth", "SendAuthOTP", "VerifyAuthOTP" };
+
+            if (!isDevelopment || !srvTrust.Contains(callerService))
             {
                 if (headerValue == null || headerValue.Parameter == null)
                 {
@@ -31,7 +35,7 @@ namespace GoldHelpers.Helpers
 
                     try
                     {
-                        GoldAPIResult? result = new GoldAPIResponse(GoldHosts.Accounting, "/api/Attributes/GetAuthorize", new { Token = token }).Post();
+                        GoldAPIResult? result = new GoldAPIResponse(GoldHosts.Accounting, "/api/Attributes/GetServiceAuthorize", new { Token = token }).Post();
 
                         if (result != null && result.Data == "false")
                         {
